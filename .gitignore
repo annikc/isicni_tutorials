@@ -2,7 +2,7 @@
 .gitignore 
 
 # ignore weirdo mac display file
-.DS_Store
+*/.DS_Store
 
 # ignore folders created for notebook
 .ipynb_checkpoints/
