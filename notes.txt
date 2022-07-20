@@ -1,0 +1,17 @@
+# see also https://zoo.cs.yale.edu/classes/cs470/materials/hws/aima/mdp.html
+
+MDP TODO
+-- Explain why we set random seed
+-- Explain what the rows/columns of P mean
+-- Decision Process explanation
+-- Decision process coding
+
+How to solve MDPs TODO
+-- Basics of RL approaches
+-- What is an environment
+-- What is an agent
+-- Q learning & SARSA
+
+Basics of Neural Networks TODO
+--
+

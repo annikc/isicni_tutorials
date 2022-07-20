@@ -1,6 +1,6 @@
-### annik carson march 2020
+### annik carson aug 2022
 import numpy as np
-
+import pandas as pd
 
 def sample_MC_trajectory(S, P):
     '''
@@ -59,6 +59,7 @@ def sample_MRP_trajectory(S, P, R):
 
     return trajectory, rewards
 
+# backward rollout of return value through the reward vector
 def discount_rwds(rewards, gamma):
     rewards = np.asarray(rewards)
     disc_rwds = np.zeros_like(rewards)
@@ -69,7 +70,12 @@ def discount_rwds(rewards, gamma):
     return disc_rwds
 
 # Show computation of return for t= 0
-def first_element_return(T,rewards, gamma):
+def first_element_return(T, rewards, gamma):
+    '''
+    T (list)        : trajectory of states visited
+    rewards (array) : rewards received along trajectory
+    gamma (float)   : discount factor
+    '''
     discount_powers = []
     for i in range(len(T)):
         discount_powers.append(gamma**i)
@@ -94,14 +100,14 @@ def get_MRP_values(S, P, R, gamma, num_runs):
     P (array): transition probability matrix
     R (list) : reward vector
     '''
+    state_list = ["C1", "C2", "C3", "Pass", "Pub", "FB", "Sleep"]
     avgd_st_vals = []
-    for j in range(len(R)):
+    for j in range(len(state_list)):
         get_state_values = []
         for i in range(num_runs):
             trajectory = []
             rewards = [] 
             done = False
-            state_list = ["C1", "C2", "C3", "Pass", "Pub", "FB", "Sleep"]
 
             # start all of your trajectories in jth state 
             state = j
@@ -119,4 +125,28 @@ def get_MRP_values(S, P, R, gamma, num_runs):
 
             get_state_values.append(discount_rwds(rewards, gamma)[0])
         avgd_st_vals.append(np.round(np.mean(get_state_values),4))
-    return avgd_st_vals
+    avgd_st_vals_dict = dict(zip(state_list,avgd_st_vals))
+    return avgd_st_vals_dict
+
+def show_trajectory_table(T, rewards, gammas):
+    '''
+    T (list)        : states visited along trajectory
+    rewards (array) : rewards collected along trajectory
+    gammas (list)   : discount factors to compute return values
+    '''
+    data = {'state':T, 'reward':rewards}
+    
+    # calculate returns for each reward 
+    for gamma in gammas:
+        G = discount_rwds(rewards, gamma)
+        data[f'G ($\gamma$={gamma})']=G
+    
+
+    df = pd.DataFrame(data)
+    df.index.name='step'
+    return df
+    
+    #data = np.array((T,rewards,G)).T
+    #table = tabulate.tabulate(data, headers=["Step","Reward", f"G ($\gamma$={gamma})"], tablefmt='html')
+    #table
+    
