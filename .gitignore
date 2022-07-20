@@ -1,0 +1,8 @@
+# specify which files to ignore from git commits
+
+# ignore weirdo mac display file
+.DS_Store
+
+# ignore folders created for notebook
+.ipynb_checkpoints/
+.idea
