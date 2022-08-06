@@ -1,6 +1,6 @@
 ### annik carson aug 2022
 import numpy as np
-import pandas as pd
+from tabulate import tabulate
 
 def sample_MC_trajectory(S, P):
     '''
@@ -141,12 +141,7 @@ def show_trajectory_table(T, rewards, gammas):
         G = discount_rwds(rewards, gamma)
         data[f'G ($\gamma$={gamma})']=G
     
-
-    df = pd.DataFrame(data)
-    df.index.name='step'
-    return df
-    
-    #data = np.array((T,rewards,G)).T
-    #table = tabulate.tabulate(data, headers=["Step","Reward", f"G ($\gamma$={gamma})"], tablefmt='html')
-    #table
+    data = np.array((T,rewards,G)).T
+    table = tabulate(data, headers=["Step","Reward", f"G ($\gamma$={gamma})"], tablefmt='html')
+    return table
     
