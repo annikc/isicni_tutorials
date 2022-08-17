@@ -7,4 +7,6 @@ The tutorial covers the following:
 - Environments, specifying transition/reward functions
 - Agents (basic model-free, value-based agents)
 
-
+Exercises are in general small segments code to be completed within pre-written functions. 
+There are some exercises that involve full code to be left to the reader. 
+Solutions for this code are available in the `RL_tut_solutions.ipynb` notebook. 
