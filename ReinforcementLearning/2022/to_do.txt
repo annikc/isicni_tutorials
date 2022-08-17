@@ -1,5 +1,0 @@
-## To Do List for RL Tutorial 
-
-- mdp_tut_functions: move calculate return function to general utils? 
-- env_functions: clean up gridworld, remove unnecessary functions
-- 
