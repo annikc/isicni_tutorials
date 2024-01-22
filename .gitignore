@@ -1,6 +1,6 @@
 # specify which files to ignore from git commits
 .gitignore 
-
+**/__pycache__/**
 # ignore weirdo mac display file
 **/.DS_Store
 
