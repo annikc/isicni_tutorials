@@ -212,9 +212,14 @@ def show_trajectory_table(T, rewards, gammas, actions=None):
     table = pd.DataFrame(data)
     return table
 
+
 def state_rewards(s, R=[-2., -2., -2., 10., 1., -1., 0.]):
-   # where indices of R correspond to ["C1", "C2", "C3", "Pass", "Pub", "FB", "Sleep"]
-   return R[s]
+    '''
+    s (int or list): index/indices of the environment state
+    R (list)       : list of rewards for all states; here corresponding to ["C1", "C2", "C3", "Pass", "Pub", "FB", "Sleep"]
+    '''
+    rewards = np.take(R, s) # returns a list of the rewards for each of the visited states
+    return rewards
 
 #def state_action_reward(s,a):
 #    R = np.zeros((n_states, n_actions))
