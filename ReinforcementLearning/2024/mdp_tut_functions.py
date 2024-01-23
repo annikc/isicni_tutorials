@@ -1,6 +1,16 @@
-### annik carson aug 2022
+### annik carson jan 2024
 import numpy as np
 import pandas as pd
+
+# backward rollout of return value through the reward vector
+def discount_rwds(rewards, gamma):
+    rewards = np.asarray(rewards)
+    disc_rwds = np.zeros_like(rewards)
+    running_add = 0
+    for t in reversed(range(0, rewards.size)):
+        running_add = running_add*gamma + rewards[t]
+        disc_rwds[t] = running_add
+    return disc_rwds
 
 def sample_MC_trajectory(S, P):
     '''
@@ -76,7 +86,7 @@ def sample_MDP_trajectory(S, P, R, start_state, action_sequence=None):
     if not start_state in state_list:
         raise Exception('Agent has tried an invalid action!')
     
-    # pick first state randomly (not including terminal states)
+    # add starting state to trajectory (not including terminal states)
     state = state_list.index(start_state)
     trajectory.append(state_list[state])
     rewards.append(R[state])
@@ -84,15 +94,27 @@ def sample_MDP_trajectory(S, P, R, start_state, action_sequence=None):
     if action_sequence is not None:
         action_seq = []
         for action in action_sequence:
-            # get next states from distribution given by
-            # the row of P corresponding to current state
-            state = np.random.choice(S, 1, p = P[action,state])[0]
-            trajectory.append(state_list[state])
-            action_seq.append(action_list[action])
-            rewards.append(R[state])
-            # if in terminal state, finish trajectory
-            if state == state_list.index("Sleep"): 
-                done = True
+            if not done:
+                # get next states from distribution given by
+                # the row of P corresponding to current state
+                next_state = np.random.choice(S, 1, p = P[action,state])[0]
+                trajectory.append(state_list[next_state])
+                action_seq.append(action_list[action])
+                rewards.append(R[next_state])
+                
+                print(state_list[state],action,state_list[next_state],R[next_state])
+                # update the information carried in the state variable
+                state = next_state
+
+                # if in terminal state, finish trajectory
+                if state == state_list.index("Sleep"): 
+                    done = True
+    
+        
+        # after taking all of the steps, append one more empty action to make the shapes the same
+        # there is no "next action" after you finish stepping through your action_sequence
+        action_seq.append("None")
+
     else:
         ## use a random policy for action selection
         action_seq = []
@@ -105,20 +127,13 @@ def sample_MDP_trajectory(S, P, R, start_state, action_sequence=None):
             # if in terminal state, finish trajectory
             if state == state_list.index("Sleep"): 
                 done = True
+                # after taking all of the steps, append one more empty action to make the shapes the same
+                # once in a terminal state you don't take another action
+                action_seq.append("None")
 
     return trajectory, action_seq, rewards
 
-# backward rollout of return value through the reward vector
-def discount_rwds(rewards, gamma):
-    rewards = np.asarray(rewards)
-    disc_rwds = np.zeros_like(rewards)
-    running_add = 0
-    for t in reversed(range(0, rewards.size)):
-        running_add = running_add*gamma + rewards[t]
-        disc_rwds[t] = running_add
-    return disc_rwds
-
-# Show computation of return for t= 0
+# Show computation of return for first state in trajectory (eg. t=0)
 def first_element_return(T, rewards, gamma):
     '''
     T (list)        : trajectory of states visited
